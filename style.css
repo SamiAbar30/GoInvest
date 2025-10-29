@@ -1,0 +1,202 @@
+/* Global Styles */
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background-color: #f4f7f6;
+    color: #333;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+h1, h2 {
+    color: #0056b3;
+    padding-bottom: 10px;
+}
+h1 {
+    text-align: center;
+}
+h2 {
+    border-bottom: 2px solid #eee;
+}
+
+/* Navbar */
+.navbar {
+    width: 100%;
+    background-color: #fff;
+    border-bottom: 1px solid #ddd;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    padding: 10px 0;
+}
+.navbar .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 0;
+    margin-bottom: 0;
+    box-shadow: none;
+    background: none;
+}
+.navbar-brand {
+    font-size: 1.5em;
+    font-weight: bold;
+    color: #0056b3;
+}
+.navbar-user {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+#welcome-user {
+    font-weight: bold;
+}
+
+/* Buttons */
+.btn {
+    display: inline-block;
+    padding: 12px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    text-align: center;
+    text-decoration: none;
+    color: #fff;
+    background-color: #007bff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    width: 100%; /* Full width for forms */
+    box-sizing: border-box; /* Include padding in width */
+}
+.btn:hover {
+    background-color: #0056b3;
+}
+.btn.btn-secondary {
+    background-color: #6c757d;
+    width: auto; /* Auto width for nav button */
+}
+.btn.btn-secondary:hover {
+    background-color: #5a6268;
+}
+
+/* Login/Register Forms */
+.form-container {
+    max-width: 450px;
+    margin: 50px auto;
+    padding: 30px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+.form-group {
+    margin-bottom: 20px;
+}
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+.form-group input[type="text"],
+.form-group input[type="password"] {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box; /* Include padding in width */
+}
+.role-selection p {
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+.role-selection label {
+    font-weight: normal;
+    margin-right: 15px;
+    margin-left: 5px;
+}
+.form-switch {
+    text-align: center;
+    margin-top: 20px;
+}
+.message {
+    text-align: center;
+    font-weight: bold;
+    margin-top: 15px;
+}
+.message.success {
+    color: green;
+}
+.message.error {
+    color: red;
+}
+
+/* Student Form */
+#idea-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+#idea-form textarea {
+    width: 100%;
+    min-height: 120px;
+    padding: 15px;
+    font-size: 16px;
+    font-family: inherit;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    resize: vertical;
+    box-sizing: border-box;
+}
+
+/* Investor Idea Cards */
+#ideas-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+.card {
+    background: #fdfdfd;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+}
+.card p {
+    font-size: 1.1em;
+    line-height: 1.6;
+    margin-top: 0;
+    margin-bottom: 15px;
+}
+.card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.card-author {
+    font-style: italic;
+    color: #555;
+    font-size: 0.9em;
+}
+.like-btn {
+    padding: 8px 15px;
+    font-size: 14px;
+    background-color: #e7f3ff;
+    color: #0056b3;
+    border: 1px solid #b3d7ff;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.2s;
+    width: auto; /* Override full width */
+}
+.like-btn:hover {
+    background-color: #d1e7ff;
+    border-color: #007bff;
+}

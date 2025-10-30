@@ -26,6 +26,25 @@
             <button type="submit" class="btn">Post Idea</button>
         </form>
     </div>
+    <h2>Project Comments (read only)</h2>
+<ul id="comments-list"></ul>
+
+<script>
+  // Load comments saved by investors
+  const comments = JSON.parse(localStorage.getItem("comments")) || [];
+  const list = document.getElementById("comments-list");
+
+  comments.forEach((c) => {
+    const li = document.createElement("li");
+    li.style.border = "1px solid #ccc";
+    li.style.padding = "8px";
+    li.style.marginBottom = "5px";
+    li.innerHTML = `<strong>${c.author}</strong> 
+      <span style="color:gray; font-size:12px;">(${c.time})</span><br>${c.text}`;
+    list.appendChild(li);
+  });
+</script>
+
 
     <script src="app.js"></script>
 </body>

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GoInvest - Student</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style/global.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style/header.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style/view-post.css') }}">
+</head>
+<body>
+    {% from "components/header.html" import header %}
+    {{ header(user, pages) }}
+    <div class="view-post">
+        <div class="view">
+            <p class="view-title">{{ post.title }}</p>
+            <div class="view-legend">
+                <p>{{ post.author.name }} {{ post.author.surname }}</p>
+                <p>{{ post.date }}</p>
+            </div>
+            <div class="view-content">
+                <div class="view-left-content">
+                    <p class="view-description">
+                        {{ post.description }}
+                    </p>
+                    <div class="post-feedback">
+                        <div class="post-like">
+                            <img src="{{ url_for('static', filename='images/like-full.svg') }}">
+                            <p>{{ post.like_number }}</p>
+                        </div>
+                        <div class="post-comment">
+                            <img src="{{ url_for('static', filename='images/comment-full.svg') }}">
+                            <p>{{ post.comments|length }}</p>
+                        </div>
+                        <div class="post-contact">
+                            <img src="{{ url_for('static', filename='images/contact-full.svg') }}">
+                            <p>{{ post.contact_number }}</p>
+                        </div>
+                    </div>
+                    <div class="view-attachments">
+                        <div class="attachment">
+                            <div class="attachment-placeholder"></div>
+                            <p>Attachment 1</p>
+                        </div>
+                    </div>
+                    <div class="view-comments">
+                        <p class="comments-title">Comments</p>
+                        <form class="create-comment" method="POST" action="{{ url_for('add_comment', post_id=post.id) }}">
+                            <textarea type="text" name="content" placeholder="Enter your comment"></textarea>
+                            <button type="submit">Post</button>
+                        </form>
+                        <div class="comment-list">
+                            {% for comment in post.comments %}
+                                <div class="comment">
+                                    <p class="comment-title">{{ comment.user.name }} {{ comment.user.surname }}</p>
+                                    <p class="comment-content">{{ comment.content }}</p>
+                                    <p class="comment-date">{{ comment.time_ago }}</p>
+                                </div>
+                            {%endfor%}
+                        </div>
+                    </div>
+                </div>
+                <div class="view-right-content">
+                    <div class="view-interaction">
+                        <div>
+                            <img src="{{ url_for('static', filename='images/like.svg') }}">
+                            <a href="{{ url_for('like_post', post_id=post.id) }}">Like</a>
+                        </div>
+                        <div>
+                            <img src="{{ url_for('static', filename='images/contact.svg') }}">
+                            <p>Contact</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

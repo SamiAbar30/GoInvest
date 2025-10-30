@@ -1,0 +1,28 @@
+{% macro header(user, pages=None) %}
+<div class="navbar">
+    <a href="/dashboard">
+        <img class="navbar-logo" src="{{ url_for('static', filename='images/logo.svg') }}">
+    </a>
+    <div class="navbar-search">
+        <div class="searchbar">
+            <input type="text" placeholder="Search">
+            <img src="{{ url_for('static', filename='images/search.svg') }}">
+        </div>
+    </div>
+    <div class="navbar-menu">
+        {% if user.role == 'student' %}
+        <a href="/post" class="{% if pages == 'add_post' %}active{% endif %}">
+            <img src="{{ url_for('static', filename='images/post.svg') }}">
+            <p>Post</p>
+        </a>
+        {%endif%}
+        <a href="#">
+            <img src="{{ url_for('static', filename='images/inbox.svg') }}">
+            <p>Inbox</p>
+        </a>
+        <a href="/my_posts" class="{% if pages == 'my_post' %}active{% endif %}">
+            <p class="bold">{{ user.name }}</p>
+        </a>
+    </div>
+</div>
+{% endmacro %}

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GoInvest - Register</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style/global.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style/login.css') }}">
+</head>
+<body>
+    <div class="form-container">
+        <div class="form-elements">
+            <img class="form-logo" src="{{ url_for('static', filename='images/logo.svg') }}" alt="GoInvest">
+        
+            <form id="login-form" method="POST" action="{{ url_for('register') }}">
+                <div class="form-role">
+                    <div class="student selected-role" id="student-role">
+                        <p>Student</p>
+                    </div>
+                    <div class="investor" id="investor-role">
+                        <p>Investor</p>
+                    </div>
+                </div>
+                <input type="email" name="email" id="username" placeholder="Email address" required>
+                <input type="text" name="name" id="name" placeholder="Name" required>
+                <input type="text" name="surname" id="surname" placeholder="Surname" required>
+                <input type="password" name="password" id="password" placeholder="Password" required>
+                <input type="hidden" name="role" value="student" id="role">
+                <button type="submit" class="btn">Create account</button>
+            </form>
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, msg in messages %}
+                <p class="message">{{ msg }}</p>
+                {% endfor %}
+            {% endif %}
+            {% endwith %}
+            
+            <p class="form-switch">
+                Already have an account? <a href="/login">Login here</a>
+            </p>
+        </div>
+    </div>
+    <script src="{{ url_for('static', filename='script/register.js') }}"></script>
+</body>
+</html>

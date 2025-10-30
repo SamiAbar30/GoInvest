@@ -1,0 +1,158 @@
+.view-post p {
+    font-family: 'Inter';
+}
+.view {
+    margin: auto;
+    margin-top: 50px;
+    border: 1px solid var(--stroke);
+    padding: 40px;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    width: 90%;
+    max-width: 800px;
+}
+.view-title {
+    color: black;
+    font-size: 22px;
+    font-weight: 700;
+    margin: 0;
+    margin-bottom: 20px;
+}
+.view-legend {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+.view-legend p {
+    margin: 0;
+    margin-bottom: 30px;
+    font-size: 18px;
+    color: var(--subtext)
+}
+.view-description {
+    margin: 5px;
+    color: black;
+    font-size: 18px;
+}
+.comments-title {
+    color: black;
+    font-size: 22px;
+    font-weight: 700;   
+}
+.post-feedback {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+}
+.post-feedback div {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    margin: 0 5px;
+}
+.post-feedback p {
+    color: black;
+    font-size: 16px;
+    margin-left: 4px;
+}
+.attachment-placeholder {
+    border-radius: 10px;
+    background-color: var(--stroke);
+    width: 200px;
+    height: 100px
+}
+.attachment p {
+    color: var(--subtext);
+    margin: 0;
+    margin-top: -25px;
+    margin-left: 10px;
+    font-size: 18px;
+}
+.view-content {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+.view-left-content, .view-right-content {
+    display: flex;
+    flex-direction: column;
+}
+.view-left-content {
+    width: 100%;
+}
+.view-right-content {
+    margin-left: 60px;
+}
+.view-interaction div {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+}
+.view-interaction p, .view-interaction a {
+    margin: 0;
+    color: black;
+    font-size: 20px;
+    margin: 10px 0;
+    margin-left: 10px;
+    font-family: 'Inter';
+    text-decoration: none;
+}
+.view-interaction img {
+    height: 22px;
+    width: 22px;
+}
+.comment-title, .comment-date  {
+    font-size: 18px;
+    color: var(--subtext);
+    margin: 0;
+}
+.comment {
+    margin: 20px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+}
+.comment-date {
+    align-self: flex-end;
+}
+.create-comment {
+    border: 1px solid var(--stroke);
+    padding: 15px;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+}
+.comment-content {
+    margin: 10px 0;
+    color: black;
+    font-size: 18px;
+}
+.create-comment button {
+    background-color: white;
+    border: none;
+    margin: 0;
+    padding: 0;
+    color: var(--main);
+    font-size: 18px;
+    font-weight: 600;
+    align-self: flex-end;
+}
+.create-comment textarea {
+    border: none;
+    font-size: 16px;
+    color: var(--subtext);
+    width: 100%;
+}

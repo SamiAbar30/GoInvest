@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GoInvest - {{ user.role }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style/global.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style/header.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style/post.css') }}">
+</head>
+<body>
+    {% from "components/header.html" import header %}
+    {% from "components/post.html" import view_post %}
+    {{ header(user, pages) }}
+    <div class="post-section">
+        {% for post in posts %}
+            {{ view_post(post) }}
+        {% endfor %}
+    </div>
+</body>
+</html>

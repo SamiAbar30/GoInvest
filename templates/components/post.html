@@ -1,0 +1,33 @@
+{% macro view_post(post) %}
+<div class="post">
+    <div class="post-content">
+        <p class="post-title">
+            {{ post.title }}
+        </p>
+        <div class="post-legend">
+            <p>{{ post.author.name }} {{ post.author.surname }}</p>
+            <p>{{ post.time_ago }}</p>
+        </div>
+        <p class="post-description">
+            {{ post.description }}
+        </p>
+        <div class="post-feedback">
+            <div class="post-like">
+                <img src="{{ url_for('static', filename='images/like-full.svg') }}">
+                <p>{{ post.like_number }}</p>
+            </div>
+            <div class="post-comment">
+                <img src="{{ url_for('static', filename='images/comment-full.svg') }}">
+                <p>{{ post.comments|length }}</p>
+            </div>
+            <div class="post-contact">
+                <img src="{{ url_for('static', filename='images/contact-full.svg') }}">
+                <p>{{ post.contact_number }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="post-interaction">
+        <a href="{{ url_for('view_post', post_id=post.id) }}">Read</a>
+    </div>
+</div>
+{% endmacro %}

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GoInvest - {{ user.role }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style/global.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style/header.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style/create-post.css') }}">
+</head>
+<body>
+    {% from "components/header.html" import header %}
+    {{ header(user, pages) }}
+    <div class="create-post">
+        <div class="create">
+            <p class="create-title">Create a new business project</p>
+            <form method="POST">
+                <label for="title">Title</label>
+                <input type="text" id="title" name="title" placeholder="Enter a title" required>
+                <label for="description">Description</label>
+                <textarea type="text" class="description" name="description" id="description" placeholder="Enter a description" required></textarea>
+                <label for="upload">Attach a file (pdf, image <5MB)</label>
+                <input type="file" id="upload">
+                <p class="create-legend">Optional</p>
+                <button type="submit">Publish Project</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

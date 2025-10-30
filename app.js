@@ -225,4 +225,77 @@ document.addEventListener('DOMContentLoaded', () => {
 
         displayIdeas(); // Carga inicial
     }
+    // --- COMMENTS LOGIC ---
+const commentInput = document.getElementById("comment-input");
+const publishBtn = document.getElementById("publish-btn");
+const clearBtn = document.getElementById("clear-btn");
+const errorMsg = document.getElementById("error-message");
+const commentsList = document.getElementById("comments-list");
+
+// Simulate "logged in investor"
+const currentUser = {
+  name: "Investor John",
+  role: "investor",
+};
+
+// Load previous comments from localStorage
+let comments = JSON.parse(localStorage.getItem("comments")) || [];
+
+// Function to display comments
+function renderComments() {
+  commentsList.innerHTML = "";
+  comments.forEach((c) => {
+    const li = document.createElement("li");
+    li.style.border = "1px solid #ccc";
+    li.style.padding = "8px";
+    li.style.marginBottom = "5px";
+    li.innerHTML = `<strong>${c.author}</strong> 
+      <span style="color:gray; font-size:12px;">(${c.time})</span><br>${c.text}`;
+    commentsList.appendChild(li);
+  });
+}
+
+// Save + render
+function saveComments() {
+  localStorage.setItem("comments", JSON.stringify(comments));
+  renderComments();
+}
+
+// Publish button click
+publishBtn.addEventListener("click", () => {
+  const text = commentInput.value.trim();
+
+  if (text.length === 0) {
+    errorMsg.textContent = "Comment cannot be empty.";
+    return;
+  }
+  if (text.length > 1000) {
+    errorMsg.textContent = "Comment cannot exceed 1000 characters.";
+    return;
+  }
+
+  errorMsg.textContent = "";
+
+  const newComment = {
+    author: currentUser.name,
+    text,
+    time: new Date().toLocaleString(),
+  };
+
+  // Add to top
+  comments.unshift(newComment);
+  saveComments();
+
+  commentInput.value = "";
+});
+
+// Clear button click
+clearBtn.addEventListener("click", () => {
+  commentInput.value = "";
+  errorMsg.textContent = "";
+});
+
+// Initial render
+renderComments();
+
 });

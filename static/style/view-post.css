@@ -156,3 +156,21 @@
     color: var(--subtext);
     width: 100%;
 }
+@media (max-width: 800px) {
+  .view {
+    padding: 10px;
+  }
+  .view-content {
+    flex-direction: column;
+  }
+  .view-interaction{
+    flex-direction: row;
+    display: flex;
+  }
+  .view-interaction div {
+    margin-right: 40px;
+  }
+  .view-right-content {
+    margin: 0;
+  }
+}

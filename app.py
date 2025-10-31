@@ -93,9 +93,11 @@ def dashboard():
 @login_required
 def view_post(post_id):
     post = db.query(Post).filter_by(id=post_id).first()
+    comments = db.query(Comment).filter_by(post_id=post_id).order_by(Comment.date.desc()).all()
     if not post:
         return redirect(url_for("dashboard"))
     
+    post.comments = comments
     for c in post.comments:
         c.time_ago = time_ago(c.date)
 

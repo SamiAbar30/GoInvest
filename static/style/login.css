@@ -86,3 +86,19 @@
     font-family: 'Inter';
     font-size: 20px;
 }
+@media (max-width: 580px) {
+    .form-container {
+        width: 100%;
+        box-shadow: none;
+    }
+    .form-elements {
+        width: 100%;
+        min-width: unset;
+        padding: 0;
+        
+    }
+    .form-elements input, .form-elements button {
+        margin-left: 15px;
+        margin-right: 15px;
+    }
+}

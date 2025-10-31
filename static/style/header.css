@@ -7,6 +7,7 @@ body {
     flex-direction: row;
     width: 100%;
     justify-content: space-between;
+    flex-wrap: wrap;
     align-items: center;
     max-width: 1500px;
     width: 100%;
@@ -14,6 +15,7 @@ body {
     margin-top: 25px;
 }
 .navbar-logo {
+    margin-left: 15px;
     width: 190px;
 }
 .searchbar {
@@ -22,6 +24,7 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    margin: 0 15px;
 }
 .searchbar img {
     margin-right: 30px;
@@ -36,7 +39,7 @@ body {
     outline: none;
     width: 100%;
     max-width: 310px;
-    min-width: 100px;
+    min-width: 80px;
 }
 .navbar-menu {
     display: flex;

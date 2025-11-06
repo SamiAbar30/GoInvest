@@ -43,9 +43,75 @@
       <span style="color:gray; font-size:12px;">(${c.time})</span><br>${c.text}`;
     list.appendChild(li);
   });
+  
 </script>
 
 
     <script src="app.js"></script>
+    <section style="max-width:720px;margin:24px auto;padding:16px;border:1px solid #e5e7eb;border-radius:8px;">
+        <h2>Attachments</h2>
+        <form id="newProjectForm">
+          <label>Title* <input id="title" required></label><br><br>
+          <label>Description* <textarea id="description" rows="4" required></textarea></label><br><br>
+          <label>Attachments (optional, max 3 — pdf/png/jpg, ≤5MB each)
+            <input id="attachments" type="file" multiple>
+          </label>
+          <p id="formError" style="color:#b91c1c;"></p>
+          <button type="submit">Publish</button>
+        </form>
+      </section>
+      
+      <script>
+        // --- demo storage (no server) ---
+        const DEMO_DB_KEY = "goinvest_demo_projects";
+        const readDB = () => JSON.parse(localStorage.getItem(DEMO_DB_KEY) || "[]");
+        const writeDB = (rows) => localStorage.setItem(DEMO_DB_KEY, JSON.stringify(rows));
+      
+        function validateFiles(files) {
+          const allowed = ["application/pdf","image/png","image/jpeg"];
+          if (files.length > 3) return "You can upload at most 3 files.";
+          for (const f of files) {
+            if (!allowed.includes(f.type)) return "Invalid file type. Only pdf, png, jpg allowed.";
+            if (f.size > 5 * 1024 * 1024) return "File too large. Max 5MB.";
+          }
+          return null;
+        }
+      
+        document.getElementById("newProjectForm").addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const err = document.getElementById("formError");
+          err.textContent = "";
+      
+          const title = document.getElementById("title").value.trim();
+          const description = document.getElementById("description").value.trim();
+          const files = document.getElementById("attachments").files;
+      
+          if (!title || !description) { err.textContent = "Title and description are required."; return; }
+          const fErr = validateFiles(files);
+          if (fErr) { err.textContent = fErr; return; }
+      
+          // Convert files to object URLs for demo viewing (not persisted across browsers)
+          const attachments = Array.from(files).map(f => ({
+            name: f.name,
+            size: f.size,
+            type: f.type,
+            url: URL.createObjectURL(f) // demo-only viewer
+          }));
+      
+          const id = crypto.randomUUID();
+          const rows = readDB();
+          rows.push({
+            id, title, description,
+            author: "Student (demo)",
+            createdAt: new Date().toISOString(),
+            attachments
+          });
+          writeDB(rows);
+      
+          // redirect to details page like the story requires
+          window.location.href = `project.html?id=${id}`;
+        });
+      </script>
+      
 </body>
 </html>

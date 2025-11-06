@@ -1,0 +1,50 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Add attachments</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body{font-family:system-ui,Arial,sans-serif;margin:24px}
+    .card{border:1px solid #e5e7eb;border-radius:8px;padding:16px;max-width:800px}
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1 id="pTitle"></h1>
+    <p id="pMeta"></p>
+    <p id="pDesc"></p>
+
+    <h3>Attachments</h3>
+    <ul id="pAttachments"></ul>
+
+    <h3>Likes & Comments (placeholder)</h3>
+    <p>👍 0 likes</p>
+    <p>(Investor comment form comes next sprint)</p>
+  </div>
+
+  <script>
+    const DEMO_DB_KEY = "goinvest_demo_projects";
+    const readDB = () => JSON.parse(localStorage.getItem(DEMO_DB_KEY) || "[]");
+
+    const id = new URLSearchParams(location.search).get("id");
+    const p = readDB().find(x => x.id === id);
+    if (!p) { document.body.innerHTML = "<p>Project not found (demo storage).</p>"; throw new Error("not found"); }
+
+    document.getElementById("pTitle").textContent = p.title;
+    document.getElementById("pMeta").textContent = `Author: ${p.author} · ${new Date(p.createdAt).toLocaleString()}`;
+    document.getElementById("pDesc").textContent = p.description;
+
+    const list = document.getElementById("pAttachments");
+    if (!p.attachments || !p.attachments.length) {
+      list.innerHTML = "<li>No attachments</li>";
+    } else {
+      p.attachments.forEach(a => {
+        const li = document.createElement("li");
+        li.innerHTML = `<a href="${a.url}" target="_blank" rel="noreferrer">${a.name}</a>`;
+        list.appendChild(li);
+      });
+    }
+  </script>
+</body>
+</html>

@@ -4,7 +4,7 @@
         <img class="navbar-logo" src="{{ url_for('static', filename='images/logo.svg') }}">
     </a>
     <div class="navbar-search">
-        <div class="searchbar">
+        <div class="searchbar" style="opacity: 0;">
             <input type="text" placeholder="Search">
             <img src="{{ url_for('static', filename='images/search.svg') }}">
         </div>
@@ -16,7 +16,7 @@
             <p>Post</p>
         </a>
         {%endif%}
-        <a href="#">
+        <a href="#" style="opacity: 0;">
             <img src="{{ url_for('static', filename='images/inbox.svg') }}">
             <p>Inbox</p>
         </a>

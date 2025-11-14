@@ -19,12 +19,104 @@
                 <input type="text" id="title" name="title" placeholder="Enter a title" required>
                 <label for="description">Description</label>
                 <textarea type="text" class="description" name="description" id="description" placeholder="Enter a description" required></textarea>
-                <label for="upload">Attach a file (pdf, image <5MB)</label>
-                <input type="file" id="upload">
-                <p class="create-legend">Optional</p>
+                <label for="upload" style="display: none;">Attach a file (pdf, image <5MB)</label>
+                <input type="file" style="display: none;" id="upload">
+                <p class="create-legend" style="display: none;">Optional</p>
+                <label for="tag_select">Project’s tags (optional)</label>
+                <div id="selected_tags">
+                    <span class="no-selected-tag">No tags</span>
+                </div>
+                <label for="tag_select" class="second-label">Add tags to this project</label>
+                <select id="tag_select">
+                    <option value="">Select a tag category</option>
+                    {% for tag in tags %}
+                        <option value="{{ tag.id }}">{{ tag.name }}</option>
+                    {% endfor %}
+                </select>
+
+                <div id="tag_error" class="tag-error"></div>
+
+                <div id="hidden_inputs"></div>
                 <button type="submit">Publish Project</button>
             </form>
         </div>
     </div>
+    <script>
+    const MAX_TAGS = 5;
+
+    function updateNoTagMessage() {
+        const selectedTagsDiv = document.getElementById("selected_tags");
+        const tagsCount = selectedTagsDiv.querySelectorAll(".tag-badge").length;
+
+        if (tagsCount === 0) {
+            selectedTagsDiv.innerHTML = '<span class="no-selected-tag">No tags</span>';
+        } else {
+            const messageDiv = selectedTagsDiv.querySelector("#no_tag_message");
+            if (messageDiv) messageDiv.remove();
+        }
+    }
+
+    document.getElementById("tag_select").addEventListener("change", function () {
+        const tagId = this.value;
+        const tagText = this.options[this.selectedIndex].text;
+        const errorBox = document.getElementById("tag_error");
+
+        errorBox.textContent = "";
+
+        if (!tagId) return;
+
+        const selectedTagsDiv = document.getElementById("selected_tags");
+        const currentTags = selectedTagsDiv.querySelectorAll(".tag-badge").length;
+
+        if (currentTags >= MAX_TAGS) {
+            errorBox.textContent = "Tags limit reached (5 tags max)";
+            this.value = "";
+            return;
+        }
+
+        if (document.getElementById("tag_" + tagId)) {
+            errorBox.textContent = "This tag is already selected";
+            this.value = "";
+            return;
+        }
+
+        if (selectedTagsDiv.textContent.includes("No tags")) {
+            selectedTagsDiv.textContent = "";
+        }
+
+        const tagBadge = document.createElement("div");
+        tagBadge.className = "tag-badge";
+        tagBadge.id = "tag_" + tagId;
+
+        const text = document.createElement("span");
+        text.className = "tag-name";
+        text.textContent = tagText;
+        tagBadge.appendChild(text);
+
+        const removeBtn = document.createElement("span");
+        removeBtn.textContent = "Remove";
+        removeBtn.className = "tag-remove"
+
+        removeBtn.onclick = function () {
+            tagBadge.remove();
+            hiddenInput.remove();
+            updateNoTagMessage();
+        };
+
+        tagBadge.appendChild(removeBtn);
+        selectedTagsDiv.appendChild(tagBadge);
+
+        const hiddenInput = document.createElement("input");
+        hiddenInput.type = "hidden";
+        hiddenInput.name = "tags";
+        hiddenInput.id = "input_" + tagId;
+        hiddenInput.value = tagId;
+        document.getElementById("hidden_inputs").appendChild(hiddenInput);
+
+        this.value = "";
+    });
+
+    updateNoTagMessage();
+    </script>
 </body>
 </html>

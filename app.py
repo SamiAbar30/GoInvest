@@ -5,6 +5,7 @@ from flask_login import LoginManager, login_user, login_required, logout_user, c
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime, timedelta
 from sqlalchemy.orm import relationship
+import re
 
 app = Flask(__name__)
 app.secret_key = "SECRET_KEY_CHANGE_ME"
@@ -33,6 +34,7 @@ class Post(Base):
 
     author_id = Column(Integer, ForeignKey("users.id"))
     author = relationship("User", backref="posts")
+    tags = relationship("PostTag", back_populates="post")
 
 
 class Comment(Base):
@@ -47,6 +49,23 @@ class Comment(Base):
     user_id = Column(Integer, ForeignKey("users.id"))
     user = relationship("User")
 
+class Tag(Base):
+    __tablename__ = "tags"
+    id = Column(Integer, primary_key=True)
+    name = Column(String, unique=True)
+
+    posts = relationship("PostTag", back_populates="tag")
+
+
+class PostTag(Base):
+    __tablename__ = "post_tags"
+    id = Column(Integer, primary_key=True)
+    
+    post_id = Column(Integer, ForeignKey("posts.id"))
+    tag_id = Column(Integer, ForeignKey("tags.id"))
+
+    post = relationship("Post", back_populates="tags")
+    tag = relationship("Tag", back_populates="posts")
 
 def time_ago(date):
     if isinstance(date, str):
@@ -59,6 +78,27 @@ def time_ago(date):
         return "1 day ago"
     return f"{days} days ago"
 
+def truncate_text(text, max_length=100):
+    if not text:
+        return ""
+    text = str(text)
+    if len(text) <= max_length:
+        return text
+    return text[:max_length].rstrip() + "..."
+
+def add_line_break_every_2_sentences(text):
+    if not text:
+        return ""
+
+    sentences = re.split(r'(?<=[.!?])\s+', text)
+    
+    grouped = []
+    for i in range(0, len(sentences), 2):
+        group = " ".join(sentences[i:i+2])
+        grouped.append(group)
+    
+    return '<span class="br"></span>'.join(grouped)
+
 Base.metadata.create_all(engine)
 Session = sessionmaker(bind=engine)
 db = Session()
@@ -66,6 +106,20 @@ db = Session()
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = "login"
+
+# Fill the tags db
+default_tags = ["B2C", "B2B", "Fintech", "Sustainability", "ZeroWaste", "Subscription", "EcoFriendly", "Startup",
+"EdTech", "Gamification", "KidsEducation", "LearningApp", "DigitalLearning",
+"HealthTech", "FoodDelivery", "Nutrition", "Fitness", "PersonalizedMeals",
+"AgriTech", "UrbanFarming", "SmartHome", "HealthyLiving",
+"MentalHealth", "AI", "Wellness", "SelfCare"
+]
+
+for tag_name in default_tags:
+    if not db.query(Tag).filter_by(name=tag_name).first():
+        db.add(Tag(name=tag_name))
+
+db.commit()
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -85,6 +139,7 @@ def dashboard():
 
     for p in posts:
         p.time_ago = time_ago(p.date)
+        p.short_description = truncate_text(p.description, max_length=150)
 
     return render_template("home.html", user=current_user, posts=posts, pages="home")
 
@@ -101,11 +156,22 @@ def view_post(post_id):
     for c in post.comments:
         c.time_ago = time_ago(c.date)
 
+    post_tags = (
+    db.query(PostTag)
+    .filter_by(post_id=post_id)
+    .join(Tag, PostTag.tag_id == Tag.id)
+    .all()
+    )
+    post.tags_list = [pt.tag.name for pt in post_tags]
+
+    post.description_with_breaks = add_line_break_every_2_sentences(post.description)
+
     return render_template("view-post.html", user=current_user, post=post, pages="home")
 
 @app.route("/post", methods=["GET", "POST"])
 @login_required
 def create_post():
+    tags = db.query(Tag).all()
     if request.method == "POST":
         title = request.form["title"]
         description = request.form["description"]
@@ -122,9 +188,17 @@ def create_post():
 
         db.add(p)
         db.commit()
+
+        selected_tags = request.form.getlist("tags")
+
+        for tag_id in selected_tags:
+            db.add(PostTag(post_id=p.id, tag_id=int(tag_id)))
+
+        db.commit()
+
         return redirect(url_for("dashboard"))
 
-    return render_template("create-post.html", user=current_user, pages="add_post")
+    return render_template("create-post.html", user=current_user, tags=tags, pages="add_post")
 
 
 @app.route("/post/<int:post_id>/comment", methods=["POST"])

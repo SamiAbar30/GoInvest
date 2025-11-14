@@ -53,7 +53,7 @@
     font-size: 14px;
 }
 .create button {
-    margin-top: 30px;
+    margin-top: 14px;
     align-self: center;
     font-family: 'Inter';
     font-size: 18px;
@@ -66,4 +66,54 @@
 }
 .description {
     min-height: 150px;
+}
+.no-selected-tag {
+    font-family: 'Inter';
+    font-size: 18px;
+    color: var(--subtext);
+}
+select {
+    border: 1px solid var(--stroke);
+    border-radius: 15px;
+    font-family: 'Inter';
+    font-size: 18px;
+    font-weight: 500;
+    color: var(--subtext);
+    padding: 18px 20px;
+    margin-bottom: 40px;
+    width: 100%;
+    background-color: white;
+    margin-top: 6px;
+}
+#selected_tags {
+    width: 100%;
+}
+.tag-badge {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin: 5px 0;
+}
+.tag-remove {
+    font-family: 'Inter';
+    font-size: 16px;
+    font-weight: 400;
+    color: var(--subtext);
+}
+.tag-name {
+    font-family: 'Inter';
+    font-size: 18px;
+    font-weight: 500;
+    color: black;
+}
+.tag-error {
+    font-family: 'Inter';
+    font-size: 20px;
+    font-weight: 500;
+    color: red;   
+}
+.second-label {
+    margin-top: 22px;
 }

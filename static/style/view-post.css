@@ -1,4 +1,4 @@
-.view-post p {
+.view-post p, span {
     font-family: 'Inter';
 }
 .view {
@@ -19,7 +19,7 @@
     font-size: 22px;
     font-weight: 700;
     margin: 0;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
 }
 .view-legend {
     width: 100%;
@@ -30,9 +30,18 @@
 }
 .view-legend p {
     margin: 0;
-    margin-bottom: 30px;
+    margin-bottom: 8px;
     font-size: 18px;
     color: var(--subtext)
+}
+.view-tags {
+    margin-bottom: 20px;
+    font-style: italic;
+}
+.view-tag {
+    font-size: 18px;
+    color: var(--main);
+    margin: 0 5px;
 }
 .view-description {
     margin: 5px;
@@ -155,6 +164,10 @@
     font-size: 16px;
     color: var(--subtext);
     width: 100%;
+}
+.br {
+    margin-top: 10px;
+    display: block;
 }
 @media (max-width: 800px) {
   .view {

@@ -16,14 +16,21 @@
             <p class="view-title">{{ post.title }}</p>
             <div class="view-legend">
                 <p>{{ post.author.name }} {{ post.author.surname }}</p>
-                <p>{{ post.date }}</p>
+                <p style="display: none;">{{ post.date }}</p>
             </div>
+            {% if post.tags_list %}
+            <div class="view-tags">
+                {% for tag in post.tags_list %}
+                    <span class="view-tag">{{ tag }}</span>
+                {% endfor %}
+            </div>
+            {% endif %}
             <div class="view-content">
                 <div class="view-left-content">
                     <p class="view-description">
-                        {{ post.description }}
+                        {{ post.description_with_breaks|safe }}
                     </p>
-                    <div class="post-feedback">
+                    <div class="post-feedback" style="display: none;">
                         <div class="post-like">
                             <img src="{{ url_for('static', filename='images/like-full.svg') }}">
                             <p>{{ post.like_number }}</p>
@@ -37,13 +44,13 @@
                             <p>{{ post.contact_number }}</p>
                         </div>
                     </div>
-                    <div class="view-attachments">
+                    <div class="view-attachments" style="display: none;">
                         <div class="attachment">
                             <div class="attachment-placeholder"></div>
                             <p>Attachment 1</p>
                         </div>
                     </div>
-                    <div class="view-comments">
+                    <div class="view-comments" style="display: none;">
                         <p class="comments-title">Comments</p>
                         <form class="create-comment" method="POST" action="{{ url_for('add_comment', post_id=post.id) }}">
                             <textarea type="text" name="content" placeholder="Enter your comment"></textarea>
@@ -60,7 +67,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="view-right-content">
+                <div class="view-right-content" style="display: none;">
                     <div class="view-interaction">
                         <div>
                             <img src="{{ url_for('static', filename='images/like.svg') }}">

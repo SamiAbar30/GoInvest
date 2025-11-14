@@ -20,7 +20,7 @@
             <img src="{{ url_for('static', filename='images/inbox.svg') }}">
             <p>Inbox</p>
         </a>
-        <a href="/my_posts" class="{% if pages == 'my_post' %}active{% endif %}">
+        <a href="/my_posts" style="opacity: 0;" class="{% if pages == 'my_post' %}active{% endif %}">
             <p class="bold">{{ user.name }}</p>
         </a>
     </div>

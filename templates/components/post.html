@@ -6,17 +6,17 @@
         </p>
         <div class="post-legend">
             <p>{{ post.author.name }} {{ post.author.surname }}</p>
-            <p>{{ post.time_ago }}</p>
+            <p style="opacity: 0;">{{ post.time_ago }}</p>
         </div>
         <p class="post-description">
-            {{ post.description }}
+            {{ post.short_description }}
         </p>
         <div class="post-feedback">
-            <div class="post-like">
+            <div class="post-like" style="opacity: 0;">
                 <img src="{{ url_for('static', filename='images/like-full.svg') }}">
                 <p>{{ post.like_number }}</p>
             </div>
-            <div class="post-comment">
+            <div class="post-comment" style="opacity: 0;">
                 <img src="{{ url_for('static', filename='images/comment-full.svg') }}">
                 <p>{{ post.comments|length }}</p>
             </div>

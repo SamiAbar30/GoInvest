@@ -22,7 +22,10 @@
                 <label for="upload" style="display: none;">Attach a file (pdf, image <5MB)</label>
                 <input type="file" style="display: none;" id="upload">
                 <p class="create-legend" style="display: none;">Optional</p>
-                <label for="tag_select">Project’s tags (optional)</label>
+                <div class="project-tag">
+                    <label for="tag_select">Project’s tags (optional)</label>
+                    <span id="openPopupBtn" class="btn">Help</span>
+                </div>
                 <div id="selected_tags">
                     <span class="no-selected-tag">No tags</span>
                 </div>
@@ -41,6 +44,49 @@
             </form>
         </div>
     </div>
+    <div id="popup" class="popup-overlay">
+        <div class="popup-content">
+            <span id="closePopupBtn" class="close-btn">Close</span>
+            <h2>Category and tags help</h2>
+            <p>Each category contains a list of tags, to add one tag select a category and add tags from this category.</p>
+            <p>You can add tags from multiple categories.</p>
+            <h3>Categories details</h3>
+            <ul>
+                {% for category in categories %}
+                    <div class="popup-category">
+                        <h3>{{ category.name }}</h3>
+
+                        {% for tag in category.tags %}
+                            <div class="popup-category-tag">
+                                <div class="pop-cat-tag-header">
+                                    <p class="cat-tag-name" data-tag-id="{{ tag.id }}">{{ tag.name }}</p>
+                                    <p class="cat-tag-add">Add tag</p>
+                                </div>
+                                <div class="pop-cat-tag-desc">
+                                    {{ tag.description }}
+                                </div>
+                            </div>
+                        {% endfor %}
+
+                    </div>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+    <script>
+        const popup = document.getElementById("popup");
+        const openBtn = document.getElementById("openPopupBtn");
+        const closeBtn = document.getElementById("closePopupBtn");
+
+        openBtn.onclick = () => { popup.style.display = "flex"; }
+        closeBtn.onclick = () => { popup.style.display = "none"; }
+
+        window.onclick = (e) => {
+            if (e.target === popup) {
+                popup.style.display = "none";
+            }
+        }
+    </script>
     <script>
     const MAX_TAGS = 5;
 
@@ -117,6 +163,71 @@
     });
 
     updateNoTagMessage();
+    </script>
+
+    <script>
+        document.querySelectorAll(".cat-tag-add").forEach(btn => {
+        btn.addEventListener("click", function () {
+            const tagDiv = btn.closest(".popup-category-tag");
+            const tagName = tagDiv.querySelector(".cat-tag-name").textContent;
+            const tagId = tagDiv.querySelector(".cat-tag-name").dataset.tagId;
+
+            const selectedTagsDiv = document.getElementById("selected_tags");
+            const errorBox = document.getElementById("tag_error");
+
+            errorBox.textContent = "";
+
+            if (!tagId) return;
+
+            const currentTags = selectedTagsDiv.querySelectorAll(".tag-badge").length;
+            if (currentTags >= 5) {
+                errorBox.textContent = "Tags limit reached (5 tags max)";
+                popup.style.display = "none";
+                return;
+            }
+
+            if (document.getElementById("tag_" + tagId)) {
+                errorBox.textContent = "This tag is already selected";
+                popup.style.display = "none";
+                return;
+            }
+            if (selectedTagsDiv.textContent.includes("No tags")) {
+                selectedTagsDiv.textContent = "";
+            }
+
+            const tagBadge = document.createElement("div");
+            tagBadge.className = "tag-badge";
+            tagBadge.id = "tag_" + tagId;
+
+            const text = document.createElement("span");
+            text.className = "tag-name";
+            text.textContent = tagName;
+            tagBadge.appendChild(text);
+
+            const removeBtn = document.createElement("span");
+            removeBtn.textContent = "Remove";
+            removeBtn.className = "tag-remove";
+            removeBtn.onclick = function () {
+                tagBadge.remove();
+                hiddenInput.remove();
+                updateNoTagMessage();
+            };
+            tagBadge.appendChild(removeBtn);
+
+            selectedTagsDiv.appendChild(tagBadge);
+
+            const hiddenInput = document.createElement("input");
+            hiddenInput.type = "hidden";
+            hiddenInput.name = "tags";
+            hiddenInput.id = "input_" + tagId;
+            hiddenInput.value = tagId;
+            document.getElementById("hidden_inputs").appendChild(hiddenInput);
+
+            popup.style.display = "none";
+
+            updateNoTagMessage();
+        });
+    });
     </script>
 </body>
 </html>

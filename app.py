@@ -35,6 +35,7 @@ class Post(Base):
     author_id = Column(Integer, ForeignKey("users.id"))
     author = relationship("User", backref="posts")
     tags = relationship("PostTag", back_populates="post")
+    views = Column(Integer, default=0)
 
 
 class Comment(Base):
@@ -53,6 +54,10 @@ class Tag(Base):
     __tablename__ = "tags"
     id = Column(Integer, primary_key=True)
     name = Column(String, unique=True)
+    description = Column(String)
+
+    category_id = Column(Integer, ForeignKey("tag_categories.id"))
+    category = relationship("TagCategory", back_populates="tags")
 
     posts = relationship("PostTag", back_populates="tag")
 
@@ -66,6 +71,14 @@ class PostTag(Base):
 
     post = relationship("Post", back_populates="tags")
     tag = relationship("Tag", back_populates="posts")
+
+class TagCategory(Base):
+    __tablename__ = "tag_categories"
+
+    id = Column(Integer, primary_key=True)
+    name = Column(String, unique=True)
+
+    tags = relationship("Tag", back_populates="category")
 
 def time_ago(date):
     if isinstance(date, str):
@@ -108,16 +121,107 @@ login_manager.init_app(app)
 login_manager.login_view = "login"
 
 # Fill the tags db
-default_tags = ["B2C", "B2B", "Fintech", "Sustainability", "ZeroWaste", "Subscription", "EcoFriendly", "Startup",
-"EdTech", "Gamification", "KidsEducation", "LearningApp", "DigitalLearning",
-"HealthTech", "FoodDelivery", "Nutrition", "Fitness", "PersonalizedMeals",
-"AgriTech", "UrbanFarming", "SmartHome", "HealthyLiving",
-"MentalHealth", "AI", "Wellness", "SelfCare"
-]
+default_categories = {
+  "Business": [
+    {
+      "name": "B2B",
+      "description": "Business-to-Business; products or services intended for companies rather than individuals."
+    },
+    {
+      "name": "B2C",
+      "description": "Business-to-Consumer; products or services designed for direct end-users or customers."
+    },
+    {
+      "name": "Startup",
+      "description": "A newly created business focused on innovation, scalability, and rapid growth."
+    },
+    {
+      "name": "Subscription",
+      "description": "A recurring revenue model where customers pay periodically for continuous access to a product or service."
+    }
+  ],
+  
+  "Education": [
+    {
+      "name": "EdTech",
+      "description": "Educational technology solutions designed to enhance learning experiences through digital tools."
+    },
+    {
+      "name": "KidsEducation",
+      "description": "Learning programs, tools, or platforms created specifically for children’s education."
+    },
+    {
+      "name": "LearningApp",
+      "description": "A mobile or web application designed to support learning through interactive or structured content."
+    },
+    {
+      "name": "DigitalLearning",
+      "description": "Education delivered through digital platforms, enabling remote or flexible learning experiences."
+    }
+  ],
 
-for tag_name in default_tags:
-    if not db.query(Tag).filter_by(name=tag_name).first():
-        db.add(Tag(name=tag_name))
+  "Health": [
+    {
+      "name": "HealthTech",
+      "description": "Innovative technology solutions aimed at improving healthcare services, diagnostics, or patient experience."
+    },
+    {
+      "name": "Wellness",
+      "description": "Products or services focused on promoting well-being, balance, and healthy lifestyle habits."
+    },
+    {
+      "name": "Nutrition",
+      "description": "Solutions or information related to healthy eating, dietary optimization, or personalized meal plans."
+    },
+    {
+      "name": "MentalHealth",
+      "description": "Tools or services supporting mental well-being, mindfulness, stress management, and emotional health."
+    }
+  ],
+
+  "Sustainability": [
+    {
+      "name": "EcoFriendly",
+      "description": "Products or services designed to minimize environmental impact through sustainable practices."
+    },
+    {
+      "name": "ZeroWaste",
+      "description": "A lifestyle or approach aiming to eliminate waste by reusing, recycling, and reducing consumption."
+    },
+    {
+      "name": "UrbanFarming",
+      "description": "Growing food in cities using innovative or small-scale agricultural methods."
+    }
+  ],
+
+  "Tech": [
+    {
+      "name": "AI",
+      "description": "Artificial Intelligence technologies used to automate tasks, provide insights, or enhance user experiences."
+    },
+    {
+      "name": "Gamification",
+      "description": "The use of game mechanics to increase engagement, motivation, or learning."
+    },
+    {
+      "name": "SmartHome",
+      "description": "Connected devices and systems designed to automate and improve home living."
+    }
+  ]
+}
+
+for category_name, tag_list in default_categories.items():
+    cat = db.query(TagCategory).filter_by(name=category_name).first()
+    if not cat:
+        cat = TagCategory(name=category_name)
+        db.add(cat)
+        db.commit()
+
+    for tag_obj in tag_list:
+        tag = db.query(Tag).filter_by(name=tag_obj["name"]).first()
+        if not tag:
+            tag = Tag(name=tag_obj["name"], description=tag_obj["description"], category_id=cat.id)
+            db.add(tag)
 
 db.commit()
 
@@ -134,7 +238,7 @@ def index():
 @app.route("/dashboard")
 @login_required
 def dashboard():
-    posts = db.query(Post).all()
+    posts = db.query(Post).order_by(Post.views.desc()).all()
     
 
     for p in posts:
@@ -166,12 +270,16 @@ def view_post(post_id):
 
     post.description_with_breaks = add_line_break_every_2_sentences(post.description)
 
+    post.views = (post.views or 0) + 1
+    db.commit()
+
     return render_template("view-post.html", user=current_user, post=post, pages="home")
 
 @app.route("/post", methods=["GET", "POST"])
 @login_required
 def create_post():
     tags = db.query(Tag).all()
+    categories = db.query(TagCategory).all()
     if request.method == "POST":
         title = request.form["title"]
         description = request.form["description"]
@@ -198,7 +306,7 @@ def create_post():
 
         return redirect(url_for("dashboard"))
 
-    return render_template("create-post.html", user=current_user, tags=tags, pages="add_post")
+    return render_template("create-post.html", user=current_user, tags=tags, categories=categories, pages="add_post")
 
 
 @app.route("/post/<int:post_id>/comment", methods=["POST"])

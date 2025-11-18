@@ -117,3 +117,67 @@ select {
 .second-label {
     margin-top: 22px;
 }
+.project-tag {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 6px;
+}
+.project-tag label {
+    margin-bottom: 0px;
+}
+.btn {
+    font-family: 'Inter';
+    color: black;
+    font-size: 18px;
+}
+.popup-overlay {
+    display: none; 
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.6);
+    justify-content: center;
+    align-items: center;
+    z-index: 9000;
+}
+
+.popup-content {
+    background: white;
+    padding: 25px;
+    border-radius: 10px;
+    width: 600px;
+    max-height: 70%;
+    overflow-y: auto;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    animation: fadeIn .3s ease;
+    font-family: 'Inter';
+}
+
+.close-btn {
+    float: right;
+    font-size: 20px;
+    color: var(--subtext);
+    cursor: pointer;
+}
+
+@keyframes fadeIn {
+    from { transform: scale(0.9); opacity: 0; }
+    to   { transform: scale(1);   opacity: 1; }
+}
+
+.popup-category-tag {
+    margin-left: 20px;
+    margin-bottom: 25px;
+}
+.pop-cat-tag-header {
+    font-size: 17px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.cat-tag-add {
+    font-weight: bold;
+    cursor: pointer;
+}

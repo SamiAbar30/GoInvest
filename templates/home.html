@@ -11,11 +11,14 @@
 <body>
     {% from "components/header.html" import header %}
     {% from "components/post.html" import view_post %}
-    {{ header(user, pages) }}
+    {{ header(user, qs, pages) }}
     <div class="post-section">
         {% for post in posts %}
             {{ view_post(post) }}
         {% endfor %}
+        {% if not posts %}
+            <p class="post-section-error">No projects found</p>
+        {% endif %}
     </div>
 </body>
 </html>

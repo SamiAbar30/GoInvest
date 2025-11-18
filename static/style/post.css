@@ -19,7 +19,8 @@
 .post p {
     margin: 0;
 }
-.post-title {
+.post-title, .post-section-error {
+    font-family: 'Inter';
     font-size: 22px;
     font-weight: 700;
     color: black;

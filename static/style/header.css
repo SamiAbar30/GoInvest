@@ -41,6 +41,12 @@ body {
     max-width: 310px;
     min-width: 80px;
 }
+.searchbar button {
+    border: none;
+    background: none;
+    margin: 0;
+    padding: 0;
+}
 .navbar-menu {
     display: flex;
     flex-direction: row;

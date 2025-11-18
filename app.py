@@ -289,5 +289,53 @@ def logout():
     logout_user()
     return redirect(url_for("index"))
 
+
+@app.route("/search", methods=["GET"])
+@login_required
+def search():
+    query = request.args.get("qs", "").strip()
+
+    if not query:
+        return render_template("search.html", user=current_user, posts=[], q=query)
+
+    posts_title_desc = db.query(Post).filter(
+        (Post.title.ilike(f"%{query}%")) |
+        (Post.description.ilike(f"%{query}%"))
+    ).all()
+
+    posts_author = (
+        db.query(Post)
+        .join(User, Post.author_id == User.id)
+        .filter(
+            (User.name.ilike(f"%{query}%")) |
+            (User.surname.ilike(f"%{query}%"))
+        )
+        .all()
+    )
+
+    posts_tags = (
+        db.query(Post)
+        .join(PostTag, Post.id == PostTag.post_id)
+        .join(Tag, Tag.id == PostTag.tag_id)
+        .filter(Tag.name.ilike(f"%{query}%"))
+        .all()
+    )
+
+    results = list({post.id: post for post in posts_title_desc + posts_author + posts_tags}.values())
+
+    for p in results:
+        p.time_ago = time_ago(p.date)
+        p.short_description = truncate_text(p.description, 150)
+
+        post_tags = (
+            db.query(PostTag)
+            .filter_by(post_id=p.id)
+            .join(Tag, PostTag.tag_id == Tag.id)
+            .all()
+        )
+        p.tags_list = [t.tag.name for t in post_tags]
+
+    return render_template("home.html", user=current_user, posts=results, qs=query)
+
 if __name__ == "__main__":
     app.run(debug=True)

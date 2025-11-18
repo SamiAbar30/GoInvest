@@ -10,7 +10,7 @@
 </head>
 <body>
     {% from "components/header.html" import header %}
-    {{ header(user, pages) }}
+    {{ header(user, pages=pages) }}
     <div class="view-post">
         <div class="view">
             <p class="view-title">{{ post.title }}</p>

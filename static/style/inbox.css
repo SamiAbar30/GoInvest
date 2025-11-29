@@ -1,0 +1,130 @@
+.view {
+    margin: auto;
+    margin-top: 50px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    width: 90%;
+    max-width: 1200px;
+    height: 80vh;
+}
+p {
+    font-family: 'Inter';
+    color: black;
+    font-size: 18px;
+}
+.inbox-messages {
+    margin-left: 30px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+.inbox-contact, .inbox-messages {
+    border: 1px solid var(--stroke);
+    border-radius: 10px;
+    height: 100%;
+    width: 100%;
+    padding: 10px 0;
+}
+.inbox-contact {
+    width: 30%;
+    min-width: 240px;
+}
+.contact {
+    border: 1px solid var(--main);
+    border-left: 0;
+    border-right: 0;
+    margin-top: -1px;
+    padding: 5px 10px;
+}
+.contact-info {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+}
+.contact-info-open {
+    cursor: pointer;
+    font-weight: bold;
+}
+.messages {
+    margin-top: 20px;
+    overflow: auto;
+}
+.message {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin: 10px;
+}
+.message p {
+    margin: 0;
+}
+.message-content {
+    border: 1px solid var(--main);
+    border-radius: 30px 12px 12px 0px;
+    padding: 14px 40px;
+    margin: 0;
+}
+.message-right .message-content{
+    border-radius: 12px 30px 0 12px;
+    border: 1px solid var(--stroke);
+}
+.message-right {
+    display: flex;
+    align-items: flex-end;
+}
+.send-message {
+    margin-top: 14px;
+    margin-bottom: 20px;
+    width: 100%;
+    align-self: center;
+}
+.send-message form {
+    width: 100%;
+    display: flex;
+    flex-direction: row; 
+}
+.send-message input {
+    border: 1px solid var(--stroke);
+    border-radius: 15px;
+    padding: 18px 20px;
+    font-family: 'Inter';
+    color: black;
+    font-size: 18px;
+    font-weight: 600;
+    width: 100%;
+}
+
+.send-message button {
+    background-color: var(--main);
+    border-radius: 15px;
+    color: white;
+    padding: 18px 60px;
+    border: none;
+    font-size: 18px;
+    font-weight: 600;
+    font-family: 'Inter';
+    margin-left: 20px;
+}
+.inbox-messages {
+    padding: 10px 50px;
+}
+@media (max-width: 780px) {
+    .view {
+        flex-direction: column;
+        height: auto;
+    }
+    .inbox-messages {
+        margin-top: 20px;
+        margin-bottom: 20px;
+        margin-left: 0;
+        padding: 0;
+    }
+    .inbox-contact {
+        width: 100%;
+        max-width: unset;
+    }
+}

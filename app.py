@@ -353,6 +353,12 @@ def my_posts():
 
     return render_template("home.html", posts=posts, user=current_user, pages="my_post")
 
+@app.route("/inbox")
+@login_required
+def inbox():
+
+    return render_template("inbox.html", user=current_user, pages="inbox")
+
 @app.route("/register", methods=["GET", "POST"])
 def register():
     if request.method == "POST":

@@ -18,7 +18,7 @@ body {
     margin-left: 15px;
     width: 190px;
 }
-.searchbar {
+.searchbar form {
     border: 1px solid var(--stroke);
     border-radius: 20px;
     display: flex;

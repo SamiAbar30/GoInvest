@@ -13,141 +13,76 @@
     {{ header(user, pages=pages) }}
     <div class="view">
         <div class="inbox-contact">
-            <div class="contact">
+            {% for conv in conversations %}
+                {% set other = conv.user2 if conv.user1_id == user.id else conv.user1 %}
+                <div class="contact">
                 <div class="contact-info">
-                    <p class="contact-info-name">Investor Name</p>
-                    <p class="contact-info-open">Open</p>
+                    <p class="contact-info-name">{{ other.name }} {{ other.surname }}</p>
+                    <a class="contact-info-open" href="/inbox?conv_id={{ conv.id }}" >Open</a>
                 </div>
             </div>
-            <div class="contact">
-                <div class="contact-info">
-                    <p class="contact-info-name">Investor Name</p>
-                    <p class="contact-info-open">Open</p>
-                </div>
-            </div>
+            {% endfor %}
         </div>
         <div class="inbox-messages">
             <div class="messages">
-                <div class="message message-left">
-                    <div class="message-content">
-                        <p>Message Content</p>
+                {% if not selected_conv %}
+                    <div>
+                        Please select a conversation to start
                     </div>
-                    <div class="message-author">
-                        <p>Investor name</p>
-                    </div>
-                </div>
-                <div class="message message-right">
-                    <div class="message-content">
-                        <p>Message Content</p>
-                    </div>
-                    <div class="message-author">
-                        <p>User name</p>
-                    </div>
-                </div>
-                <div class="message message-left">
-                    <div class="message-content">
-                        <p>Message Content</p>
-                    </div>
-                    <div class="message-author">
-                        <p>Investor name</p>
-                    </div>
-                </div>
-                <div class="message message-right">
-                    <div class="message-content">
-                        <p>Message Content</p>
-                    </div>
-                    <div class="message-author">
-                        <p>User name</p>
-                    </div>
-                </div>
-                <div class="message message-left">
-                    <div class="message-content">
-                        <p>Message Content</p>
-                    </div>
-                    <div class="message-author">
-                        <p>Investor name</p>
-                    </div>
-                </div>
-                <div class="message message-right">
-                    <div class="message-content">
-                        <p>Message Content</p>
-                    </div>
-                    <div class="message-author">
-                        <p>User name</p>
-                    </div>
-                </div>
-                <div class="message message-left">
-                    <div class="message-content">
-                        <p>Message Content</p>
-                    </div>
-                    <div class="message-author">
-                        <p>Investor name</p>
-                    </div>
-                </div>
-                <div class="message message-right">
-                    <div class="message-content">
-                        <p>Message Content</p>
-                    </div>
-                    <div class="message-author">
-                        <p>User name</p>
-                    </div>
-                </div>
-                <div class="message message-left">
-                    <div class="message-content">
-                        <p>Message Content</p>
-                    </div>
-                    <div class="message-author">
-                        <p>Investor name</p>
-                    </div>
-                </div>
-                <div class="message message-right">
-                    <div class="message-content">
-                        <p>Message Content</p>
-                    </div>
-                    <div class="message-author">
-                        <p>User name</p>
-                    </div>
-                </div>
-                <div class="message message-left">
-                    <div class="message-content">
-                        <p>Message Content</p>
-                    </div>
-                    <div class="message-author">
-                        <p>Investor name</p>
-                    </div>
-                </div>
-                <div class="message message-right">
-                    <div class="message-content">
-                        <p>Message Content</p>
-                    </div>
-                    <div class="message-author">
-                        <p>User name</p>
-                    </div>
-                </div>
-                <div class="message message-left">
-                    <div class="message-content">
-                        <p>Message Contentsghdioghqpoghqpegh pshgpeqgh phgpeghp hpgggggggg gggggggg gggggggggggg ggggggggggg ggggggggggggg pdghpghpgh</p>
-                    </div>
-                    <div class="message-author">
-                        <p>Investor name</p>
-                    </div>
-                </div>
-                <div class="message message-right">
-                    <div class="message-content">
-                        <p>Message Content</p>
-                    </div>
-                    <div class="message-author">
-                        <p>User name</p>
-                    </div>
-                </div>
+                {% else %}
+
+                {% for m in messages %}
+                    {% set sender = m.sender %}
+
+                    {% if m.sender_id == user.id %}
+                        <div class="message message-right">
+                            <div class="message-content">
+                                <p>{{ m.content }}</p>
+                            </div>
+                            <div class="message-author">
+                                <p>{{ sender.name }} {{ sender.surname }}</p>
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="message message-left">
+                            <div class="message-content">
+                                <p>{{ m.content }}</p>
+                            </div>
+                            <div class="message-author">
+                                <p>{{ sender.name }} {{ sender.surname }}</p>
+                            </div>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+                {% endif %}
             </div>
             <div class="send-message">
-                <form>
-                    <input type="text" placeholder="Write a message" required>
-                    <button type="submit">Send</button>
-                </form>
+                <input type="text" id="message_input" placeholder="Write a message" required>
+                <button onclick="sendMessage({{ selected_conv.id }}, {{ selected_conv.user2_id if selected_conv.user1_id == user.id else selected_conv.user1_id }})" type="submit">Send</button>
             </div>
         </div>
     </div>
+    <script>
+    function sendMessage(conversation_id, receiver_id) {
+        let content = document.getElementById("message_input").value.trim();
+        if (content) {
+            fetch(`/message/send/${receiver_id}`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    content: content
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    window.location.href = "/inbox?conv_id=" + conversation_id;
+                } else {
+                    alert("Error : " + data.error);
+                }
+            });
+        }
+    }
+    </script>
 </body>
 </html>

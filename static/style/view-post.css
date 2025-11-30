@@ -193,11 +193,13 @@
     align-items: center;
     width: 100%;
     margin-top: 25px;
+    flex-wrap: wrap;
 }
 .view-bottom-left {
     display: flex;
     align-items: center;
     justify-content: flex-start;
+    flex-wrap: wrap;
 }
 .view-first-btn, .view-second-btn, .view-third-btn {
     background-color: #FFBB00;

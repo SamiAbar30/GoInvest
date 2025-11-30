@@ -80,6 +80,34 @@ class TagCategory(Base):
 
     tags = relationship("Tag", back_populates="category")
 
+class Conversation(Base):
+    __tablename__ = "conversations"
+    id = Column(Integer, primary_key=True)
+
+    user1_id = Column(Integer, ForeignKey("users.id"))
+    user2_id = Column(Integer, ForeignKey("users.id"))
+
+    user1 = relationship("User", foreign_keys=[user1_id])
+    user2 = relationship("User", foreign_keys=[user2_id])
+
+    messages = relationship("Message", back_populates="conversation", cascade="all, delete")
+
+
+class Message(Base):
+    __tablename__ = "messages"
+    id = Column(Integer, primary_key=True)
+
+    content = Column(String)
+    timestamp = Column(DateTime, default=datetime.utcnow)
+
+    sender_id = Column(Integer, ForeignKey("users.id"))
+    receiver_id = Column(Integer, ForeignKey("users.id"))
+    conversation_id = Column(Integer, ForeignKey("conversations.id"))
+
+    sender = relationship("User", foreign_keys=[sender_id])
+    receiver = relationship("User", foreign_keys=[receiver_id])
+    conversation = relationship("Conversation", back_populates="messages")
+
 def time_ago(date):
     if isinstance(date, str):
         date = datetime.strptime(date, "%Y-%m-%d %H:%M:%S")
@@ -248,6 +276,78 @@ def dashboard():
     return render_template("home.html", user=current_user, posts=posts, pages="home")
 
 
+@app.route("/message/send/<int:receiver_id>", methods=["POST"])
+@login_required
+def create_conversation_and_send_message(receiver_id):
+    data = request.json
+    content = data.get("content", "").strip()
+
+    receiver = db.query(User).filter_by(id=receiver_id).first()
+    if not receiver:
+        return {"error": "Receiver not found"}, 404
+
+    conv = (
+        db.query(Conversation)
+        .filter(
+            ((Conversation.user1_id == current_user.id) & (Conversation.user2_id == receiver_id)) |
+            ((Conversation.user1_id == receiver_id) & (Conversation.user2_id == current_user.id))
+        )
+        .first()
+    )
+
+    if not conv:
+        conv = Conversation(user1_id=current_user.id, user2_id=receiver_id)
+        db.add(conv)
+        db.commit()
+
+    if content:
+        msg = Message(
+            content=content,
+            sender_id=current_user.id,
+            receiver_id=receiver_id,
+            conversation_id=conv.id
+        )
+        db.add(msg)
+        db.commit()
+
+    return {
+        "success": True,
+        "conversation_id": conv.id
+    }
+
+@app.route("/inbox")
+@login_required
+def inbox():
+    conv_id = request.args.get("conv_id", None)
+
+    conversations = db.query(Conversation).filter(
+        (Conversation.user1_id == current_user.id) |
+        (Conversation.user2_id == current_user.id)
+    ).all()
+
+    selected_conv = None
+    messages = []
+
+    if conv_id:
+        selected_conv = db.query(Conversation).filter_by(id=conv_id).first()
+
+        if selected_conv and current_user.id in [selected_conv.user1_id, selected_conv.user2_id]:
+            messages = (
+                db.query(Message)
+                .filter_by(conversation_id=conv_id)
+                .order_by(Message.timestamp.asc())
+                .all()
+            )
+
+    return render_template(
+        "inbox.html",
+        user=current_user,
+        pages="inbox",
+        conversations=conversations,
+        selected_conv=selected_conv,
+        messages=messages
+    )
+
 @app.route("/post/<int:post_id>")
 @login_required
 def view_post(post_id):
@@ -352,12 +452,6 @@ def my_posts():
         p.time_ago = time_ago(p.date)
 
     return render_template("home.html", posts=posts, user=current_user, pages="my_post")
-
-@app.route("/inbox")
-@login_required
-def inbox():
-
-    return render_template("inbox.html", user=current_user, pages="inbox")
 
 @app.route("/register", methods=["GET", "POST"])
 def register():

@@ -81,19 +81,36 @@
                 </div>     
             </div>
             <div class="view-bottom-content">
-                    <div class="view-bottom-left">
-                        <div class="view-first-btn">
-                            <p>Show Interest in Funding</p>
-                        </div>
-                        <div class="view-second-btn">
-                            <p>Offer Mentorship</p>
-                        </div>
+                <div class="view-bottom-left">
+                    <div class="view-first-btn" onclick="sendMessageToAuthor({{ post.author_id }}, 'Hello, I am interested in funding this project')">
+                        <p>Show Interest in Funding</p>
                     </div>
-                    <div class="view-third-btn">
-                        <p>Contact</p>
+                    <div class="view-second-btn" onclick="sendMessageToAuthor({{ post.author_id }}, 'Hello, I am interesting in offering you a mentorship')">
+                        <p>Offer Mentorship</p>
                     </div>
+                </div>
+                <div class="view-third-btn" onclick="sendMessageToAuthor({{ post.author_id }})">
+                    <p>Contact</p>
+                </div>
             </div>
         </div>
     </div>
+    <script>
+        function sendMessageToAuthor(authorId, content='') {
+            fetch(`/message/send/${authorId}`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ content: content })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    window.location.href = "/inbox";
+                }
+            });
+        }
+</script>
 </body>
 </html>

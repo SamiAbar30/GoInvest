@@ -13,8 +13,8 @@
             <img class="form-logo" src="{{ url_for('static', filename='images/logo.svg') }}" alt="GoInvest">
         
             <form id="login-form"  method="POST" action="{{ url_for('login') }}">
-                <input type="email" name="email" id="username" placeholder="Email address" required>
-                <input type="password" name="password" id="password" placeholder="Password" required>
+                <input type="email" name="email" id="username" placeholder="Email address" value="chad@student.com" required>
+                <input type="password" name="password" id="password" placeholder="Password" value="azerty" required>
                 <button type="submit" class="btn">Login</button>
             </form>
             
